@@ -13,6 +13,9 @@ public class FrmPrincipal extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JMenu mnVisualizar,  mnValidar;
+	private JMenuItem mntmResumen, mntmDetalle, mntmEntrar, mntmSalir;
+	private JMenuBar mnPrincipal;
 
 	
 
@@ -25,26 +28,41 @@ public class FrmPrincipal extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		JMenuBar mnPrincipal = new JMenuBar();
+		addComponents();
+		addListeners();
+	}
+
+
+
+	private void addListeners() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	private void addComponents() {
+		mnPrincipal = new JMenuBar();
 		contentPane.add(mnPrincipal, BorderLayout.NORTH);
 		
-		JMenu mnVisualizar = new JMenu("Visualizar");
+		mnVisualizar = new JMenu("Visualizar");
 		mnPrincipal.add(mnVisualizar);
 		
-		JMenuItem mntmDetalle = new JMenuItem("Detalle");
+		mntmDetalle = new JMenuItem("Detalle");
 		mnVisualizar.add(mntmDetalle);
 		
-		JMenuItem mntmResumen = new JMenuItem("Resumen");
+		mntmResumen = new JMenuItem("Resumen");
 		mnVisualizar.add(mntmResumen);
 		
-		JMenu mnValidar = new JMenu("Validar");
+		mnValidar = new JMenu("Validar");
 		mnPrincipal.add(mnValidar);
 		
-		JMenuItem mntmEntrar = new JMenuItem("Entrar");
+		mntmEntrar = new JMenuItem("Entrar");
 		mnValidar.add(mntmEntrar);
 		
-		JMenuItem mntmSalir = new JMenuItem("Salir");
+		mntmSalir = new JMenuItem("Salir");
 		mnValidar.add(mntmSalir);
+		
 	}
 
 }
