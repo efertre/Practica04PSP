@@ -23,13 +23,13 @@ public class Config {
 		userName = prop.getProperty("USER");
 		userPass = prop.getProperty("PASS");
 
-		switch (SGBDR.fromString(TYPE)) {		
+		switch (SGBDR.fromString(TYPE)) {
 			case SQLITE    -> url = "jdbc:sqlite:" + NAME;
 			case MYSQL     -> url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + NAME;
 			case ACCESS    -> url = "jdbc:ucanaccess://" + NAME + ";memory=true";
 			case ORACLE    -> url = "jdbc:oracle:thin:@" + HOST + ":" + PORT + ":" + NAME;
-			case SQLSERVER -> url = "jdbc:hyperion:sqlserver://" + HOST + ":" + PORT + ";DatabaseName=" + NAME;		
+			case SQLSERVER -> url = "jdbc:hyperion:sqlserver://" + HOST + ":" + PORT + ";DatabaseName=" + NAME;
 		}
 	}
 	
-}	
+}
