@@ -17,6 +17,10 @@ public class Asignatura {
 	}
 	
 	
+	public Asignatura() {
+	}
+
+
 	public String getNombre() {
 		return nombre;
 	}

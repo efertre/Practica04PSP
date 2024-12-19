@@ -24,6 +24,10 @@ public class Alumno {
 	}
 	
 	
+	public Alumno() {
+			}
+
+
 	public Integer getNumero() {
 		return numero;
 	}
