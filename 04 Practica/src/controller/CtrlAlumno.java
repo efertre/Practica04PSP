@@ -1,10 +1,11 @@
 package controller;
 
-import model.Alumno;
-
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import model.Alumno;
 
 public class CtrlAlumno {
 
@@ -44,32 +45,23 @@ public class CtrlAlumno {
         }
     }
 
-    /**
-     * Actualiza los datos de un alumno en la base de datos.
-     * @param alumno el objeto Alumno con los datos actualizados.
-     * @return true si la actualización fue exitosa, false en caso contrario.
-     * @throws SQLException si ocurre un error durante la actualización.
-     */
-    public boolean actualizarAlumno(Alumno alumno) throws SQLException {
-        String query = String.format(
-                "UPDATE Alumno SET usuario = '%s', contrasena = '%s', fechaNacimiento = '%s', " +
-                        "notaMedia = %.2f, imagen = ? WHERE numero = %d",
-                alumno.getUsuario(),
-                alumno.getContrasenia(),
-                java.sql.Date.valueOf(alumno.getFechaNac()).toString(),
-                alumno.getNotaMedia(),
-                alumno.getNumero()
-        );
+    public boolean actualizarNotaMedia(Alumno alumno) throws SQLException {
+        
+        String query = "UPDATE Alumno SET nota_media = ? WHERE numero = ?";
 
-        java.sql.PreparedStatement preparedStatement = CtrlConexion.obtenerConexion().prepareStatement(query);
+        // Prepara la consulta
+        try (PreparedStatement preparedStatement = CtrlConexion.obtenerConexion().prepareStatement(query)) {
+            // Establece los parámetros
+            preparedStatement.setDouble(1, alumno.getNotaMedia());  // Establece la nueva nota media
+            preparedStatement.setInt(2, alumno.getNumero());        // Establece el número del alumno
 
-        // Establece la imagen como parámetro (BLOB).
-        preparedStatement.setBytes(1, alumno.getImg() );
-        int filasAfectadas = preparedStatement.executeUpdate();
-        preparedStatement.close();
+            // Ejecuta la actualización
+            int filasAfectadas = preparedStatement.executeUpdate();
 
-        return filasAfectadas > 0;
+            return filasAfectadas > 0;  // Si se actualizó al menos una fila, la actualización fue exitosa
+        }
     }
+
 
    
 

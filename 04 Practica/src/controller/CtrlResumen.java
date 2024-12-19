@@ -29,7 +29,7 @@ public class CtrlResumen {
      */
     public List<Asignatura> obtenerAsignaturasDeAlumno(int aluNumero) throws SQLException {
         List<Asignatura> asignaturas = new ArrayList<>();
-        String query = "SELECT * FROM Asignatura WHERE aluNumero = " + aluNumero;
+        String query = "SELECT * FROM Asignatura WHERE alumno_numero = " + aluNumero;
         ResultSet resultSet = statement.executeQuery(query);
 
         while (resultSet.next()) {
@@ -52,7 +52,7 @@ public class CtrlResumen {
      * @throws SQLException si ocurre un error al realizar la consulta.
      */
     public float calcularNotaMedia(int aluNumero) throws SQLException {
-        String query = "SELECT AVG(nota) AS notaMedia FROM Asignatura WHERE aluNumero = " + aluNumero;
+        String query = "SELECT AVG(nota) AS notaMedia FROM Asignatura WHERE alumno_numero = " + aluNumero;
         ResultSet resultSet = statement.executeQuery(query);
 
         float notaMedia = 0;
