@@ -1,10 +1,5 @@
 package view;
 
-import controller.CtrlAlumno;
-import controller.CtrlResumen;
-import model.Alumno;
-import model.Asignatura;
-
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,21 +14,26 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import controller.CtrlResumen;
+import model.Alumno;
+import model.Asignatura;
+
 public class FrmPrincipal extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JMenu mnVisualizar, mnValidar;
-	private JMenuItem mntmResumen, mntmDetalle, mntmEntrar, mntmSalir;
+	private JMenu mnVisualizar, mnValidar, mnAcercaDe;
+	private JMenuItem mntmResumen, mntmDetalle, mntmEntrar, mntmSalir, mntmAcercaDe;
 	private JMenuBar mnPrincipal;
 
-	private CtrlAlumno ctrlAlumno; // Controlador para obtener los datos
 	private Alumno alumno;
+	
 
 	public FrmPrincipal(Alumno alumno) throws SQLException {
 		// Se pasa el alumno al constructor
 		this.alumno = alumno;
-		
+
+		setTitle("Practica 04 - Psanvel & Efertre");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 500);
@@ -42,19 +42,16 @@ public class FrmPrincipal extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 
-		ctrlAlumno = new CtrlAlumno(); // Inicializamos el controlador
-
 		addComponents();
 		addListeners();
 		actualizarBotones(alumno);
 	}
 
 	private void actualizarBotones(Alumno alumno) {
-		
 
-			mnVisualizar.setEnabled(alumno != null);
-		
-			mntmEntrar.setEnabled(alumno == null);
+		mnVisualizar.setEnabled(alumno != null);
+
+		mntmEntrar.setEnabled(alumno == null);
 
 	}
 
@@ -64,7 +61,7 @@ public class FrmPrincipal extends JFrame {
 		mntmResumen.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				mostrarPanelResumen(alumno); // Pasar el número del alumno que deseas visualizar
+				mostrarPanelResumen(); // Pasar el alumno que deseas visualizar
 			}
 		});
 
@@ -95,10 +92,17 @@ public class FrmPrincipal extends JFrame {
 		mntmSalir.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Si no hay ningún alumno logueado y le da a salir 
+				if(alumno == null)
+				{
+					System.exit(0);
+				}
 				alumno = null;
 				actualizarBotones(alumno);
 			}
 		});
+		
+		mntmAcercaDe.addActionListener(e -> mostrarAcercaDe());
 	}
 
 	private void addComponents() {
@@ -124,9 +128,15 @@ public class FrmPrincipal extends JFrame {
 
 		mntmSalir = new JMenuItem("Salir");
 		mnValidar.add(mntmSalir);
+		
+		// Menú Acerca de
+		mnAcercaDe = new JMenu("Acerca de");
+        mntmAcercaDe = new JMenuItem("Información");
+        mnAcercaDe.add(mntmAcercaDe);
+		mnPrincipal.add(mnAcercaDe);
 	}
 
-	private void mostrarPanelResumen(Alumno alumno) {
+	private void mostrarPanelResumen() {
 		try {
 			CtrlResumen ctrlResumen = new CtrlResumen();
 			if (alumno != null) {
@@ -166,4 +176,8 @@ public class FrmPrincipal extends JFrame {
 		contentPane.revalidate();
 		contentPane.repaint();
 	}
+	
+	 private void mostrarAcercaDe() {
+	        JOptionPane.showMessageDialog(this, "Aplicación de Gestión Académica\nVersión 1.0\nAutores: \nPaula Sánchez Vélez \nEmanuel Esteban Fernández Trejos", "Acerca de", JOptionPane.INFORMATION_MESSAGE);
+	    }
 }

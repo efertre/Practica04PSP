@@ -75,7 +75,7 @@ public class CtrlAlumno {
         
         String query = "UPDATE Alumno SET nota_media = ? WHERE numero = ?";
 
-        // Prepara la consulta
+        // Prepara la consulta (evita inyección sql)
         try (PreparedStatement preparedStatement = CtrlConexion.obtenerConexion().prepareStatement(query)) {
             // Establece los parámetros
             preparedStatement.setDouble(1, alumno.getNotaMedia());  // Establece la nueva nota media
