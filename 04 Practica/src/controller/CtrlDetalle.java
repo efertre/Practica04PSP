@@ -1,6 +1,7 @@
 package controller;
 
 
+import model.Alumno;
 import model.Asignatura;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,11 +16,16 @@ public class CtrlDetalle {
      * Constructor que inicializa el Statement y ejecuta la consulta de asignaturas.
      * @throws SQLException si ocurre un error en la consulta.
      */
-    public CtrlDetalle() throws SQLException {
+    public CtrlDetalle(Alumno alumno) throws SQLException {
         // Obtiene el Statement con capacidad de desplazamiento y actualización.
         statement = CtrlConexion.obtenerStatementDetalle();
         // Consulta inicial: selecciona todas las asignaturas.
-        resultSet = statement.executeQuery("SELECT * FROM Asignatura");
+        resultSet = statement.executeQuery("SELECT * FROM asignatura WHERE alumno_numero =" + alumno.getNumero());
+
+        // Mover al primer registro
+        if (!resultSet.next()) {
+            throw new SQLException("No hay asignaturas disponibles en la base de datos.");
+        }
     }
 
     /**
@@ -28,7 +34,7 @@ public class CtrlDetalle {
      * @throws SQLException si ocurre un error al consultar el ResultSet.
      */
     public boolean hayRegistros() throws SQLException {
-        return resultSet.isBeforeFirst() || resultSet.isAfterLast() || resultSet.first();
+        return resultSet != null && resultSet.isBeforeFirst() || resultSet.isAfterLast() || resultSet.first();
     }
 
     /**
@@ -54,17 +60,26 @@ public class CtrlDetalle {
      * @throws SQLException si ocurre un error al mover el cursor.
      */
     public void irAlPrimero() throws SQLException {
-        resultSet.first();
+        if (hayRegistros()) {
+            resultSet.first();  // Mover al primer registro si hay registros
+        } else {
+            throw new SQLException("No hay registros disponibles.");
+        }
     }
+
+    
 
     /**
      * Mueve el cursor al último registro.
      * @throws SQLException si ocurre un error al mover el cursor.
      */
     public void irAlUltimo() throws SQLException {
-        resultSet.last();
+        if (hayRegistros()) {
+            resultSet.last();  // Mover al último registro si hay registros
+        } else {
+            throw new SQLException("No hay registros disponibles.");
+        }
     }
-
     /**
      * Verifica si el cursor está en el primer registro.
      * @return true si está en el primer registro, false en caso contrario.
@@ -89,6 +104,9 @@ public class CtrlDetalle {
      * @throws SQLException si ocurre un error al leer los datos.
      */
     public Asignatura obtenerAsignaturaActual() throws SQLException {
+        if (resultSet == null || resultSet.isBeforeFirst() || resultSet.isAfterLast()) {
+            throw new SQLException("No hay asignaturas disponibles.");
+        }
         Asignatura asignatura = new Asignatura();
         asignatura.setCodigo(resultSet.getInt("codigo"));
         asignatura.setNombre(resultSet.getString("nombre"));

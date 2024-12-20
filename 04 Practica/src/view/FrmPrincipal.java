@@ -33,7 +33,8 @@ public class FrmPrincipal extends JFrame {
 	public FrmPrincipal(Alumno alumno) throws SQLException {
 		// Se pasa el alumno al constructor
 		this.alumno = alumno;
-
+		
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 500);
 		contentPane = new JPanel();
@@ -154,7 +155,7 @@ public class FrmPrincipal extends JFrame {
 
 	private void mostrarPanelDetalle() {
 		// Crear una instancia del Panel Detalle
-		PanDetalle panelDetalle = new PanDetalle();
+		PanDetalle panelDetalle = new PanDetalle(alumno);
 
 		// Limpiar el contentPane y cargar el nuevo panel
 		contentPane.removeAll(); // Elimina todo el contenido actual
