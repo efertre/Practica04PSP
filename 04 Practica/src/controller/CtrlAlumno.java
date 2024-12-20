@@ -44,6 +44,32 @@ public class CtrlAlumno {
             return null; // Si no encuentra el alumno.
         }
     }
+    
+    public Alumno obtenerAlumnoPorUsuario(String usuario, String contrasenia) throws SQLException {
+        String query = "SELECT * FROM Alumno WHERE usuario = ? AND contrasenia = ?";
+        try (PreparedStatement preparedStatement = CtrlConexion.obtenerConexion().prepareStatement(query)) {
+            preparedStatement.setString(1, usuario);
+            preparedStatement.setString(2, contrasenia);
+            
+            ResultSet resultSet = preparedStatement.executeQuery();
+            
+            if (resultSet.next()) {
+                Alumno alumno = new Alumno();
+                alumno.setNumero(resultSet.getInt("numero"));
+                alumno.setUsuario(resultSet.getString("usuario"));
+                alumno.setContrasenia(resultSet.getString("contrasenia"));
+                alumno.setFechaNac(resultSet.getDate("fecha_nacimiento").toLocalDate());
+                alumno.setNotaMedia(resultSet.getDouble("nota_media"));
+                alumno.setImg(resultSet.getBytes("imagen"));
+                return alumno;
+            } else {
+                return null; // No se encuentra el usuario o la contraseña incorrecta
+            }
+        }
+    }
+
+    
+    
 
     public boolean actualizarNotaMedia(Alumno alumno) throws SQLException {
         

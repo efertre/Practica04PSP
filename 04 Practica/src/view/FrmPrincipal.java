@@ -21,128 +21,148 @@ import javax.swing.border.EmptyBorder;
 
 public class FrmPrincipal extends JFrame {
 
-    private static final long serialVersionUID = 1L;
-    private JPanel contentPane;
-    private JMenu mnVisualizar, mnValidar;
-    private JMenuItem mntmResumen, mntmDetalle, mntmEntrar, mntmSalir;
-    private JMenuBar mnPrincipal;
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JMenu mnVisualizar, mnValidar;
+	private JMenuItem mntmResumen, mntmDetalle, mntmEntrar, mntmSalir;
+	private JMenuBar mnPrincipal;
 
-    private CtrlAlumno ctrlAlumno; // Controlador para obtener los datos
+	private CtrlAlumno ctrlAlumno; // Controlador para obtener los datos
+	private Alumno alumno;
 
-    public FrmPrincipal() throws SQLException {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 800, 500);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+	public FrmPrincipal(Alumno alumno) throws SQLException {
+		// Se pasa el alumno al constructor
+		this.alumno = alumno;
 
-        setContentPane(contentPane);
-        contentPane.setLayout(new BorderLayout(0, 0));
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 800, 500);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(new BorderLayout(0, 0));
 
-        ctrlAlumno = new CtrlAlumno(); // Inicializamos el controlador
+		ctrlAlumno = new CtrlAlumno(); // Inicializamos el controlador
 
-        addComponents();
-        addListeners();
-    }
+		addComponents();
+		addListeners();
+		actualizarBotones(alumno);
+	}
 
-    private void addListeners() {
-        // Listener para el menú "Resumen"
-        mntmResumen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mostrarPanelResumen(1); // Pasar el número del alumno que deseas visualizar
-            }
-        });
+	private void actualizarBotones(Alumno alumno) {
+		
 
-        // Listener para el menú "Detalle"
-        mntmDetalle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mostrarPanelDetalle();
-            }
-        });
+			mnVisualizar.setEnabled(alumno != null);
+		
+			mntmEntrar.setEnabled(alumno == null);
 
-        // Listener para el menú "Entrar"
-        mntmEntrar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Acción 'Entrar' seleccionada.");
-            }
-        });
+	}
 
-        // Listener para el menú "Salir"
-        mntmSalir.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-    }
+	private void addListeners() {
+		// Listener para el menú "Resumen"
 
-    private void addComponents() {
-        mnPrincipal = new JMenuBar();
-        contentPane.add(mnPrincipal, BorderLayout.NORTH);
+		mntmResumen.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mostrarPanelResumen(alumno); // Pasar el número del alumno que deseas visualizar
+			}
+		});
 
-        // Menú Visualizar
-        mnVisualizar = new JMenu("Visualizar");
-        mnPrincipal.add(mnVisualizar);
+		// Listener para el menú "Detalle"
+		mntmDetalle.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mostrarPanelDetalle();
+			}
+		});
 
-        mntmDetalle = new JMenuItem("Detalle");
-        mnVisualizar.add(mntmDetalle);
+		// Listener para el menú "Entrar"
+		mntmEntrar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					PanLogin loginPanel = new PanLogin();
+					setContentPane(loginPanel); // Usamos setContentPane para agregar el JPanel
+					setLocationRelativeTo(null); // Este método lo coloca en el centro de la pantalla
+					setVisible(true);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
 
-        mntmResumen = new JMenuItem("Resumen");
-        mnVisualizar.add(mntmResumen);
+		// Listener para el menú "Salir"
+		mntmSalir.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				alumno = null;
+				actualizarBotones(alumno);
+			}
+		});
+	}
 
-        // Menú Validar
-        mnValidar = new JMenu("Validar");
-        mnPrincipal.add(mnValidar);
+	private void addComponents() {
+		mnPrincipal = new JMenuBar();
+		contentPane.add(mnPrincipal, BorderLayout.NORTH);
 
-        mntmEntrar = new JMenuItem("Entrar");
-        mnValidar.add(mntmEntrar);
+		// Menú Visualizar
+		mnVisualizar = new JMenu("Visualizar");
+		mnPrincipal.add(mnVisualizar);
 
-        mntmSalir = new JMenuItem("Salir");
-        mnValidar.add(mntmSalir);
-    }
+		mntmDetalle = new JMenuItem("Detalle");
+		mnVisualizar.add(mntmDetalle);
 
-    private void mostrarPanelResumen(int numeroAlumno) {
-        try {
-            // Obtener el alumno y sus asignaturas desde el controlador
-            Alumno alumno = ctrlAlumno.obtenerAlumnoPorNumero(numeroAlumno);
-            CtrlResumen ctrlResumen = new CtrlResumen();
-            if (alumno != null) {
-                // Obtener las asignaturas del alumno
-                List<Asignatura> asignaturas = ctrlResumen.obtenerAsignaturasDeAlumno(numeroAlumno);
-                
-                // Crear una instancia del Panel Resumen, pasando el alumno y las asignaturas
-                PanResumen panelResumen = new PanResumen(alumno, asignaturas);
+		mntmResumen = new JMenuItem("Resumen");
+		mnVisualizar.add(mntmResumen);
 
-                // Limpiar el contentPane y cargar el nuevo panel
-                contentPane.removeAll(); // Elimina todo el contenido actual
-                contentPane.add(mnPrincipal, BorderLayout.NORTH); // Vuelve a agregar la barra de menú
-                contentPane.add(panelResumen, BorderLayout.CENTER); // Agrega el panel de resumen
+		// Menú Validar
+		mnValidar = new JMenu("Validar");
+		mnPrincipal.add(mnValidar);
 
-                // Actualizar la ventana
-                contentPane.revalidate();
-                contentPane.repaint();
-            } else {
-                // Mostrar un mensaje si el alumno no existe
-                JOptionPane.showMessageDialog(this, "Alumno no encontrado.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+		mntmEntrar = new JMenuItem("Entrar");
+		mnValidar.add(mntmEntrar);
 
-    private void mostrarPanelDetalle() {
-        // Crear una instancia del Panel Detalle
-        PanDetalle panelDetalle = new PanDetalle();
+		mntmSalir = new JMenuItem("Salir");
+		mnValidar.add(mntmSalir);
+	}
 
-        // Limpiar el contentPane y cargar el nuevo panel
-        contentPane.removeAll(); // Elimina todo el contenido actual
-        contentPane.add(mnPrincipal, BorderLayout.NORTH); // Vuelve a agregar la barra de menú
-        contentPane.add(panelDetalle, BorderLayout.CENTER); // Agrega el panel de detalle
+	private void mostrarPanelResumen(Alumno alumno) {
+		try {
+			CtrlResumen ctrlResumen = new CtrlResumen();
+			if (alumno != null) {
+				// Obtener las asignaturas del alumno
+				List<Asignatura> asignaturas = ctrlResumen.obtenerAsignaturasDeAlumno(alumno.getNumero());
 
-        // Actualizar la ventana
-        contentPane.revalidate();
-        contentPane.repaint();
-    }
+				// Crear una instancia del Panel Resumen, pasando el alumno y las asignaturas
+				PanResumen panelResumen = new PanResumen(alumno, asignaturas);
+
+				// Limpiar el contentPane y cargar el nuevo panel
+				contentPane.removeAll(); // Elimina todo el contenido actual
+				contentPane.add(mnPrincipal, BorderLayout.NORTH); // Vuelve a agregar la barra de menú
+				contentPane.add(panelResumen, BorderLayout.CENTER); // Agrega el panel de resumen
+
+				// Actualizar la ventana
+				contentPane.revalidate();
+				contentPane.repaint();
+			} else {
+				// Mostrar un mensaje si el alumno no existe
+				JOptionPane.showMessageDialog(this, "Alumno no encontrado.");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void mostrarPanelDetalle() {
+		// Crear una instancia del Panel Detalle
+		PanDetalle panelDetalle = new PanDetalle();
+
+		// Limpiar el contentPane y cargar el nuevo panel
+		contentPane.removeAll(); // Elimina todo el contenido actual
+		contentPane.add(mnPrincipal, BorderLayout.NORTH); // Vuelve a agregar la barra de menú
+		contentPane.add(panelDetalle, BorderLayout.CENTER); // Agrega el panel de detalle
+
+		// Actualizar la ventana
+		contentPane.revalidate();
+		contentPane.repaint();
+	}
 }

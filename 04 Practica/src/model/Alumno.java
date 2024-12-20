@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public class Alumno {
 	
@@ -63,6 +64,13 @@ public class Alumno {
 	}
 	public void setImg(byte[] img) {
 		this.img = img;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Alumno [numero=" + numero + ", usuario=" + usuario + ", contrasenia=" + contrasenia + ", fechaNac="
+				+ fechaNac + ", notaMedia=" + notaMedia + ", img=" + Arrays.toString(img) + "]";
 	}
 	
 	

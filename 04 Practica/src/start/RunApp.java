@@ -11,7 +11,8 @@ public class RunApp {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					FrmPrincipal frame = new FrmPrincipal();
+					FrmPrincipal frame = new FrmPrincipal(null);
+					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
